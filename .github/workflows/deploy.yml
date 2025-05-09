@@ -1,8 +1,8 @@
-name: Portfolio App
+name: Game of Life
 on:
   push:
     branches:
-      - main  # Ana branch değiştikçe tetiklenir
+      - master  # Ana branch değiştikçe tetiklenir
 jobs:
   deploy:
     runs-on: ubuntu-latest

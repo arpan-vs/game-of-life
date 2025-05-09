@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - master  # Trigger on master branch changes
+# Add this permissions block
+permissions:
+  contents: write
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -112,6 +115,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           folder: dist
-          token: ${{ secrets.DEPLOY_TOKEN }}

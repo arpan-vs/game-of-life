@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Conway's Game of Life</title>
+    <meta name="description" content="Conway's Game of Life implemented with Rust and Yew" />
+    
+    
+<script type="module">
+import init, * as bindings from './game_of_life-d93c7232ba7c182d.js';
+const wasm = await init({ module_or_path: './game_of_life-d93c7232ba7c182d_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script>
+    <link rel="stylesheet" href="./tailwind-790b8f0fc2a8d6eb.css" integrity="sha384-sbPkJEvBJNhNgjbAg4uDS6hc8DIA9ZQQt1A/nOCWfch6/DCRthRFnHfKaUyXkoQu"/>
+
+    <style>
+      @keyframes pulse-cell {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+      }
+      .cell-born {
+          animation: pulse-cell 0.5s ease-in-out;
+      }
+  </style>
+  <base href="./" />
+
+  <link rel="modulepreload" href="./game_of_life-d93c7232ba7c182d.js" crossorigin="anonymous" integrity="sha384-MpGMMMSe71PnsvKM8WxklTUgs5bU5oJBRCeb2KEs5ViAjx4tgXkq8/LDT5FmrWF+"><link rel="preload" href="./game_of_life-d93c7232ba7c182d_bg.wasm" crossorigin="anonymous" integrity="sha384-sduT554GTU+pWLYKU5s4zr92PELzkd34J3eWVGR8pnE21qVTmSUoIieOzE6Gk0Ps" as="fetch" type="application/wasm"></head>
+  <body class="antialiased"></body>
+</html>

@@ -27,6 +27,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # Explicitly include the upload-artifact action
+      - name: Setup upload-artifact
+        uses: actions/upload-artifact@v3
+
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:

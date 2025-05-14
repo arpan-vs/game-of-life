@@ -1,8 +1,12 @@
-name: Portfolio App
+name: Game of Life
 on:
   push:
     branches:
-      - main  # Ana branch değiştikçe tetiklenir
+      - master  # Trigger on master branch changes
+# Add this permissions block
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -39,7 +43,6 @@ jobs:
                       height: 100%;
                       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
                   }
-                  
                   .container {
                       display: flex;
                       flex-direction: column;
@@ -50,20 +53,17 @@ jobs:
                       background: linear-gradient(to bottom right, #1a202c, #000000, #1f2937);
                       color: white;
                   }
-                  
                   .error-code {
                       font-size: 9rem;
                       font-weight: 700;
                       color: #9f7aea;
                       margin-bottom: 1rem;
                   }
-                  
                   .error-title {
                       font-size: 2.25rem;
                       font-weight: 700;
                       margin-bottom: 1.5rem;
                   }
-                  
                   .error-message {
                       font-size: 1.25rem;
                       color: #d1d5db;
@@ -71,7 +71,6 @@ jobs:
                       text-align: center;
                       max-width: 28rem;
                   }
-                  
                   .home-button {
                       display: flex;
                       align-items: center;
@@ -84,11 +83,9 @@ jobs:
                       cursor: pointer;
                       transition: all 0.3s ease;
                   }
-                  
                   .home-button:hover {
                       background-color: #7c3aed;
                   }
-                  
                   .home-button i {
                       margin-right: 0.5rem;
                   }
@@ -111,7 +108,7 @@ jobs:
           EOL
       
       - name: Build the App
-        run: trunk build --release --public-url game-of-life/
+        run: trunk build --release --public-url ./
       
       - name: Copy 404.html to dist
         run: cp static/404.html dist/
@@ -119,6 +116,17 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           folder: dist
-          token: ${{ secrets.DEPLOY_TOKEN }}
+          
+      - name: Enable GitHub Pages
+        run: |
+          # Use GitHub CLI to enable GitHub Pages if it's installed
+          if command -v gh &> /dev/null; then
+            gh api repos/${{ github.repository }}/pages -F source.branch=gh-pages -F source.path=/
+          else
+            echo "GitHub CLI not available. Please enable GitHub Pages manually in repository settings."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

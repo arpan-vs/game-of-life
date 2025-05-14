@@ -3,6 +3,7 @@ use gloo::timers::callback::Interval;
 use rand::Rng;
 use yew::html::Scope;
 use yew::{classes, html, Component, Context, Html};
+use web_sys::window;
 
 mod cell;
 
@@ -97,7 +98,10 @@ impl App {
         html! {
             <div 
                 key={idx} 
-                class={classes!("w-3", "h-3", "inline-block", "border-[0.5px]", "border-gray-300", "transition-colors", "duration-200", cellule_status)}
+                class={classes!(
+                    "w-3", "h-3", "sm:w-4", "sm:h-4", "md:w-5", "md:h-5",
+                    "inline-block", "border-[0.5px]", "border-gray-300", "transition-colors", "duration-200", cellule_status
+                )}
                 onclick={link.callback(move |_| Msg::ToggleCellule(idx))}>
             </div>
         }
@@ -112,7 +116,48 @@ impl Component for App {
         let callback = ctx.link().callback(|_| Msg::Tick);
         let interval = Interval::new(200, move || callback.emit(()));
 
-        let (cellules_width, cellules_height) = (80, 40);
+        // Responsive grid size based on screen width
+        fn get_responsive_grid_size() -> (usize, usize) {
+            if let Some(win) = window() {
+                let width = win.inner_width().ok().and_then(|v| v.as_f64()).unwrap_or(1280.0);
+                let height = win.inner_height().ok().and_then(|v| v.as_f64()).unwrap_or(720.0);
+
+                // Tailwind breakpoints: 640, 768, 1024, 1280, 1536
+                let (cell_px, max_w, max_h) = if width < 640.0 {
+                    (12.0, 25, 30)
+                } else if width < 768.0 {
+                    (13.0, 25, 14)
+                } else if width < 1024.0 {
+                    (13.0, 30, 18)
+                } else if width < 1280.0 {
+                    (15.0, 45, 22)
+                } else if width < 1536.0 {
+                    (16.0, 55, 28)
+                } else {
+                    (17.0, 70, 36)
+                };
+
+                log::info!("Width: {}, Height: {}", width, height);
+                // Padding and controls take up space, so subtract a bit
+                let grid_width = ((width - 32.0) / cell_px).floor() as usize;
+                let grid_height = ((height - 32.0) / cell_px).floor() as usize;
+
+                log::info!("grid width {} x height {}", grid_width, grid_height);
+
+                let width = grid_width.clamp(10, max_w);
+                let height = grid_height.clamp(8, max_h);
+
+                log::info!("{} x {}", width, height);
+
+                (width, height)
+            } else {
+                (38, 18)
+            }
+        }
+
+        let (cellules_width, cellules_height) = get_responsive_grid_size();
+
+        log::info!("Grid size: {} x {}", cellules_width, cellules_height);
 
         Self {
             active: false,
@@ -213,26 +258,28 @@ impl Component for App {
         html! {
             <div class="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
                 <header class="bg-gradient-to-r from-indigo-900 to-purple-800 shadow-lg py-6">
-                    <div class="container mx-auto px-4">
-                        <h1 class="font-bold text-3xl text-white text-center">
+                    <div class="container mx-auto px-2 sm:px-4">
+                        <h1 class="font-bold text-2xl sm:text-3xl text-white text-center">
                             { "Conway's Game of Life" }
                         </h1>
                     </div>
                 </header>
                 
-                <main class="container mx-auto px-4 py-8">
-                    <div class="bg-white rounded-xl shadow-xl p-6 mb-8">
-                        <div class="mb-4 text-center text-gray-700">
+                <main class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+                    <div class="bg-white rounded-xl shadow-xl p-2 sm:p-6 mb-4 sm:mb-8">
+                        <div class="mb-2 sm:mb-4 text-center text-gray-700 text-sm sm:text-base">
                             <p>{ "Click on cells to toggle them alive/dead, then use the controls to run the simulation." }</p>
                         </div>
                         
-                        <div class="flex justify-center mb-8">
-                            <div class="inline-block border border-gray-300 rounded-md p-1 bg-gray-50">
-                                { for cell_rows }
+                        <div class="flex justify-center mb-4 sm:mb-8">
+                            <div class="overflow-x-auto">
+                                <div class="inline-block border border-gray-300 rounded-md p-1 bg-gray-50">
+                                    { for cell_rows }
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="flex flex-wrap justify-center gap-3">
+                        <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
                             <button 
                                 class="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors duration-300"
                                 onclick={ctx.link().callback(|_| Msg::Random)}
@@ -268,9 +315,9 @@ impl Component for App {
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4">{ "Rules of Conway's Game of Life" }</h2>
-                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    <div class="bg-white rounded-xl shadow-lg p-2 sm:p-6">
+                        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-4">{ "Rules of Conway's Game of Life" }</h2>
+                        <ul class="list-disc list-inside space-y-1 sm:space-y-2 text-gray-700 text-sm sm:text-base">
                             <li>{ "Any live cell with fewer than two live neighbors dies (underpopulation)" }</li>
                             <li>{ "Any live cell with two or three live neighbors survives" }</li>
                             <li>{ "Any live cell with more than three live neighbors dies (overpopulation)" }</li>
@@ -279,7 +326,7 @@ impl Component for App {
                     </div>
                 </main>
                 
-                <footer class="bg-gray-800 text-white text-center py-4 mt-12">
+                <footer class="bg-gray-800 text-white text-center py-2 sm:py-4 mt-8 sm:mt-12 text-xs sm:text-base">
                     <p>{ "Conway's Game of Life - Implemented with Yew and Rust" }</p>
                 </footer>
             </div>

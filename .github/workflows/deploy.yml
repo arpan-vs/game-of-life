@@ -119,14 +119,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           folder: dist
-          
-      - name: Enable GitHub Pages
-        run: |
-          # Use GitHub CLI to enable GitHub Pages if it's installed
-          if command -v gh &> /dev/null; then
-            gh api repos/${{ github.repository }}/pages -F source.branch=gh-pages -F source.path=/
-          else
-            echo "GitHub CLI not available. Please enable GitHub Pages manually in repository settings."
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

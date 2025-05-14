@@ -8,8 +8,8 @@
     
     
 <script type="module">
-import init, * as bindings from './game_of_life-d93c7232ba7c182d.js';
-const wasm = await init({ module_or_path: './game_of_life-d93c7232ba7c182d_bg.wasm' });
+import init, * as bindings from './game_of_life-3787ed27d2feb40a.js';
+const wasm = await init({ module_or_path: './game_of_life-3787ed27d2feb40a_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -18,7 +18,7 @@ window.wasmBindings = bindings;
 dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
 </script>
-    <link rel="stylesheet" href="./tailwind-790b8f0fc2a8d6eb.css" integrity="sha384-sbPkJEvBJNhNgjbAg4uDS6hc8DIA9ZQQt1A/nOCWfch6/DCRthRFnHfKaUyXkoQu"/>
+    <link rel="stylesheet" href="./tailwind-7cb697a742179fd4.css" integrity="sha384-KT9Ym6DSgDhpttHI0rt6CNU/ez9i8Z/x4spupeC70KBw1Jb4m4IP8zeE1koOPADH"/>
 
     <style>
       @keyframes pulse-cell {
@@ -29,8 +29,8 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
           animation: pulse-cell 0.5s ease-in-out;
       }
   </style>
-  <base href="./" />
+  <!-- <base data-trunk-public-url /> -->
 
-  <link rel="modulepreload" href="./game_of_life-d93c7232ba7c182d.js" crossorigin="anonymous" integrity="sha384-MpGMMMSe71PnsvKM8WxklTUgs5bU5oJBRCeb2KEs5ViAjx4tgXkq8/LDT5FmrWF+"><link rel="preload" href="./game_of_life-d93c7232ba7c182d_bg.wasm" crossorigin="anonymous" integrity="sha384-sduT554GTU+pWLYKU5s4zr92PELzkd34J3eWVGR8pnE21qVTmSUoIieOzE6Gk0Ps" as="fetch" type="application/wasm"></head>
+  <link rel="modulepreload" href="./game_of_life-3787ed27d2feb40a.js" crossorigin="anonymous" integrity="sha384-S+pX6ECZu/RjxdEAMEUdG5vKZBOQzSvlEHexKDNBrjhLvBuPFYj0YPIo0qFmNl1T"><link rel="preload" href="./game_of_life-3787ed27d2feb40a_bg.wasm" crossorigin="anonymous" integrity="sha384-JRz+KXxcxRO6kC12iOD+LD4skyiDX3mtB2zpKyTu/eXu1molR0kr6ZYJicffvUP9" as="fetch" type="application/wasm"></head>
   <body class="antialiased"></body>
 </html>
